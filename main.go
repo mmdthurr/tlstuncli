@@ -4,6 +4,7 @@ import (
 	"flag"
 	"mmd/tlstuncli/tunnel"
 	"strconv"
+	"sync"
 )
 
 func main() {
@@ -15,9 +16,9 @@ func main() {
 	flag.Parse()
 
 	// var clis = make(map[int]tunnel.Cli)
-
+	var wg sync.WaitGroup
 	for p := *stP; p < (*stP + *connc); p++ {
-
+		wg.Add(1)
 		go tunnel.Cli{
 			RemoteAddr: *raddr,
 			ExposePort: strconv.Itoa(p),
@@ -26,5 +27,6 @@ func main() {
 		}.StartCli()
 
 	}
+	wg.Wait()
 
 }
