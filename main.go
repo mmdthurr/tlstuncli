@@ -5,6 +5,7 @@ import (
 	"mmd/tlstuncli/tunnel"
 	"strconv"
 	"sync"
+	"time"
 )
 
 func main() {
@@ -20,15 +21,15 @@ func main() {
 	for p := *stP; p < (*stP + *connc); p++ {
 		wg.Add(1)
 		go func(p int, remoteaddr, passwd, v2port string) {
-			for i := 0; i < 5; i++ {
+			for {
 				tunnel.Cli{
 					RemoteAddr: remoteaddr,
 					ExposePort: strconv.Itoa(p),
-					Passwd:      passwd,
+					Passwd:     passwd,
 					Bckp:       v2port,
 				}.StartCli()
+				time.Sleep(2 * time.Second)
 			}
-			wg.Done()
 		}(p, *raddr, *passwd, *v2P)
 
 	}
