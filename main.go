@@ -19,12 +19,17 @@ func main() {
 	var wg sync.WaitGroup
 	for p := *stP; p < (*stP + *connc); p++ {
 		wg.Add(1)
-		go tunnel.Cli{
-			RemoteAddr: *raddr,
-			ExposePort: strconv.Itoa(p),
-			Passwd:     *passwd,
-			Bckp:       *v2P,
-		}.StartCli()
+		go func(p int, remoteaddr, passwd, v2port string) {
+			for i := 0; i < 5; i++ {
+				tunnel.Cli{
+					RemoteAddr: remoteaddr,
+					ExposePort: strconv.Itoa(p),
+					Passwd:      passwd,
+					Bckp:       v2port,
+				}.StartCli()
+			}
+			wg.Done()
+		}(p, *raddr, *passwd, *v2P)
 
 	}
 	wg.Wait()
