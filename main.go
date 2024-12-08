@@ -14,15 +14,18 @@ func main() {
 	v2P := flag.String("v2p", "1086", "v2ray port")
 	connc := flag.Int("c", 10, "amount of connections")
 	passwd := flag.String("passwd", "123456", "tunnel passwd")
+	nodename := flag.String("name", "usa", "tunnel node name")
+
 	flag.Parse()
 
 	// var clis = make(map[int]tunnel.Cli)
 	var wg sync.WaitGroup
 	for p := *stP; p < (*stP + *connc); p++ {
 		wg.Add(1)
-		go func(p int, remoteaddr, passwd, v2port string) {
+		go func(p int, remoteaddr, passwd, v2port, noden string) {
 			for {
 				tunnel.Cli{
+					NodeName  : noden,
 					RemoteAddr: remoteaddr,
 					ExposePort: strconv.Itoa(p),
 					Passwd:     passwd,
@@ -30,7 +33,7 @@ func main() {
 				}.StartCli()
 				time.Sleep(2 * time.Second)
 			}
-		}(p, *raddr, *passwd, *v2P)
+		}(p, *raddr, *passwd, *v2P, *nodename)
 
 	}
 	wg.Wait()

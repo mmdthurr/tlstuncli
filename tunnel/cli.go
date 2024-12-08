@@ -10,7 +10,7 @@ import (
 )
 
 func (c Cli) StartCli() {
-	
+
 	conf := tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -21,7 +21,7 @@ func (c Cli) StartCli() {
 		return
 	}
 	tlsConn := tls.Client(conn, &conf)
-	tlsConn.Write([]byte(fmt.Sprintf("%s_%s_", c.Passwd, c.ExposePort)))
+	tlsConn.Write([]byte(fmt.Sprintf("%s_%s_%s_", c.Passwd, c.ExposePort, c.NodeName)))
 
 	sesssion, err := yamux.Server(tlsConn, yamux.DefaultConfig())
 	if err != nil {

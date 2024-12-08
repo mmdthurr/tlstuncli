@@ -14,6 +14,7 @@ type Srv struct {
 }
 
 type Cli struct {
+	NodeName   string
 	RemoteAddr string
 	ExposePort string
 	Passwd     string
